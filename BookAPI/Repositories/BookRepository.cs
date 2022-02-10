@@ -1,5 +1,7 @@
 ﻿using BookAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BookAPI.Repositories
 {
@@ -7,7 +9,10 @@ namespace BookAPI.Repositories
     {
         private readonly BookContext _context;
 
-        public BookRepository(BookContext context) { _context = context; }
+        public BookRepository(BookContext context) 
+        { 
+            _context = context; 
+        }
 
         public async Task<Book> Create(Book book)
         {
