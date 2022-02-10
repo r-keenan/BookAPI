@@ -1,7 +1,35 @@
+using BookAPI.Models;
+using BookAPI.Repositories;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+// Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+    {
+        builder.WithOrigins("http://localhost:3000");
+    });
+});
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddDbContext<BookContext>(o => o.UseSqlite("Data source=books.db"));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -14,6 +42,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(MyAllowSpecificOrigins);
 }
 
 app.UseHttpsRedirection();
